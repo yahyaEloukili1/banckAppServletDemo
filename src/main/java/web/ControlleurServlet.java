@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "cs",urlPatterns = {"/controleur","*.do"})
 public class ControlleurServlet extends HttpServlet {
 
-	@Override
+	private Controller controler;
+	@Override   
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(req, resp);
@@ -20,12 +21,14 @@ public class ControlleurServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		String path = req.getServletPath();
-		System.out.println(path);
-		String viewName = path.substring(1,path.indexOf(".do"));
-		System.out.println(viewName);
-		String pathView = "views/"+viewName+".jsp";
-		System.out.println(pathView);
-		req.getRequestDispatcher(pathView).forward(req, resp);;
+		String pathRquest = req.getServletPath();
+		String controllerClassName = pathRquest.substring(1,pathRquest.indexOf(".do"));
+		try {
+			controler = (Controller) Class.forName("controllers."+controllerClassName).newInstance();
+			controler.execute(req, resp);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
